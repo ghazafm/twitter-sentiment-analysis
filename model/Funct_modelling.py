@@ -1,11 +1,21 @@
-# under dan over sampling
-def undersampling(x, y):
-    from imblearn.under_sampling import RandomUnderSampler
+import pandas as pd
 
-    rus = RandomUnderSampler()
-    x, y = rus.fit_resample(x.values.reshape(-1, 1), y)
-    x = x.flatten()
-    return x, y
+def undersampling(x):
+    x_p = x[x['label']=='Positive']
+    x_n = x[x['label']=='Negative']
+
+    x_temp = x_p.sample(x_n.label.count(),random_state=42)
+    x_under = pd.concat([x_temp,x_n],axis=0,ignore_index=True)
+    return x_under
+
+def tfidf_vec(data):
+    from sklearn.feature_extraction.text import TfidfVectorizer
+
+    vectorizer = TfidfVectorizer()
+    data = vectorizer.fit_transform(data)
+    data = data.toarray()
+    data = pd.DataFrame(data, columns=vectorizer.get_feature_names_out())
+    return data
 
 # train test split
 def bagi_data(x, y):
@@ -16,15 +26,33 @@ def bagi_data(x, y):
     )
     return x_train, x_test, y_train, y_test
 
-# Vectorizing
-def tfidf_vec(data):
-    from sklearn.feature_extraction.text import TfidfVectorizer
+def preprocessing(data,tag=False):
+    data = undersampling(data)
+    tag = []
+    if tag:
+        tag = data[data.columns[-20:]]
 
-    vectorizer = TfidfVectorizer()
-    data = vectorizer.fit_transform(data)
-    data = data.toarray()
-    data = pd.DataFrame(data, columns=vectorizer.get_feature_names_out())
-    return data
+    X = data['no_stopwords']
+    y = data['label']
+
+    X = tfidf_vec(X)
+    if tag:
+        X = pd.concat([X,tag],axis=1)
+
+    x_train, x_test, y_train, y_test = bagi_data(X,y)
+
+    # if tag:
+    #     tag_train = x_train[x_train.columns[-20:]]
+    #     tag_test = x_test[x_test.columns[-20:]]
+    
+    #     x_train = x_train.drop(x_train[x_train.columns[-20:]],axis=1)
+    #     x_test = x_test.drop(x_test[x_test.columns[-20:]],axis=1)
+
+    #     x_train = pd.concat([x_train,tag_train],axis=1)
+    #     x_test = pd.concat([x_test,tag_test],axis=1)
+
+    return x_train, x_test, y_train, y_test
+
 
 # Metric Scorer
 def accuracy_score(y_test, y_pred):
