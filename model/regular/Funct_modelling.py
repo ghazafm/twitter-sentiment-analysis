@@ -10,9 +10,11 @@ def undersampling(x):
 
 def tfidf_vec(data):
     from sklearn.feature_extraction.text import TfidfVectorizer
-
+    import pickle
+    
     vectorizer = TfidfVectorizer()
     data = vectorizer.fit_transform(data)
+    pickle.dump(vectorizer, open("pickle/tfidf_untag.pickle", "wb"))
     data = data.toarray()
     data = pd.DataFrame(data, columns=vectorizer.get_feature_names_out())
     return data
