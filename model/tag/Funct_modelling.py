@@ -8,16 +8,20 @@ def undersampling(x):
     x_under = pd.concat([x_temp,x_n],axis=0,ignore_index=True)
     return x_under
 
-def tfidf_vec(data):
+def tfidf_vec(data,vector=False):
     from sklearn.feature_extraction.text import TfidfVectorizer
     import pickle
-
+    
     vectorizer = TfidfVectorizer()
-    data = vectorizer.fit_transform(data)
-    pickle.dump(vectorizer, open("pickle/tfidf_tag.pickle", "wb"))
+    vectorizer.fit(data)
+    data = vectorizer.transform(data)
+    pickle.dump(vectorizer, open("pickle/tag.pkl", "wb"))
     data = data.toarray()
     data = pd.DataFrame(data, columns=vectorizer.get_feature_names_out())
-    return data
+    if vector:
+        return data,vectorizer
+    else:
+        return data
 
 # train test split
 def bagi_data(x, y):
@@ -28,7 +32,7 @@ def bagi_data(x, y):
     )
     return x_train, x_test, y_train, y_test
 
-def preprocessing(data,tag=False):
+def preprocessing(data,tag=False,vector=True):
     data = undersampling(data)
     tag = []
     if tag:
@@ -36,8 +40,9 @@ def preprocessing(data,tag=False):
 
     X = data['no_stopwords']
     y = data['label']
-
-    X = tfidf_vec(X)
+    if vector:
+        X,vector = tfidf_vec(X,vector=True)
+    
     if tag:
         X = pd.concat([X,tag],axis=1)
 
@@ -52,7 +57,9 @@ def preprocessing(data,tag=False):
 
     #     x_train = pd.concat([x_train,tag_train],axis=1)
     #     x_test = pd.concat([x_test,tag_test],axis=1)
-
+    # if vector:
+    #     return x_train, x_test, y_train, y_test,vector
+    # else:
     return x_train, x_test, y_train, y_test
 
 
