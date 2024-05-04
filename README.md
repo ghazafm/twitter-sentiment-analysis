@@ -10,7 +10,7 @@ The dataset used in this project is sourced from Kaggle:
 
 [Indonesia Presidential Candidates Dataset 2024](https://www.kaggle.com/datasets/jocelyndumlao/indonesia-presidential-candidates-dataset-2024)
 
-Dataset ini berisi tweet berbahasa Indonesia terkait kandidat presiden untuk Pemilu 2024, beserta label sentimen positif atau negatif.
+This dataset contains Indonesian tweets related to presidential candidates for the 2024 elections, along with positive or negative sentiment labels.
 
 ## System Requirements
 
