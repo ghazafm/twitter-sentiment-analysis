@@ -1,6 +1,6 @@
 # SocialMediaSentiment
 
-# Sentiment Analysis Tweet Pemilu 2024
+# Sentiment Analysis Tweet Election 2024
 
 This project aims to build a machine learning model that can predict the sentiment of tweets (positive or negative) regarding the 2024 General Election in Indonesia. The model is trained using a dataset from Kaggle that contains tweets on the topic of the 2024 Election along with positive or negative sentiment labels.
 
