@@ -35,13 +35,14 @@ Xquik fetcher:
 export XQUIK_API_KEY="your-api-key"
 python scraping/xquik_fetch.py \
   --query "ganjar presiden indonesia 2024 lang:id until:2024-02-29 since:2024-01-01" \
-  --output scraping/tweets-data/ganjar.csv \
+  --output scraping/tweets-data/ganjar-xquik.csv \
   --limit 200
 ```
 
 The script writes the same semicolon-delimited columns used by the existing
 notebooks, including tweet IDs, text, engagement counts, language, author, and
-tweet URL.
+tweet URL. It refuses to overwrite an existing CSV unless you pass
+`--overwrite`, so checked-in samples such as `ganjar.csv` stay intact.
 
 ## Contribution
 

@@ -37,6 +37,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output", required=True, help="CSV output path")
     parser.add_argument("--limit", type=int, default=200, help="Maximum rows")
     parser.add_argument(
+        "--overwrite",
+        action="store_true",
+        help="Replace an existing output CSV",
+    )
+    parser.add_argument(
         "--query-type",
         choices=("Latest", "Top"),
         default="Latest",
@@ -156,8 +161,15 @@ def main() -> int:
     args = parse_args()
     if args.limit < 1:
         raise RuntimeError("--limit must be at least 1")
+    if os.path.exists(args.output) and not args.overwrite:
+        raise RuntimeError(
+            f"Output already exists: {args.output}. Use --overwrite to replace it.",
+        )
 
     rows = fetch_rows(args)
+    output_dir = os.path.dirname(args.output)
+    if output_dir:
+        os.makedirs(output_dir, exist_ok=True)
     with open(args.output, "w", newline="", encoding="utf-8") as output:
         writer = csv.DictWriter(output, fieldnames=FIELDNAMES, delimiter=";")
         writer.writeheader()
